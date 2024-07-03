@@ -56,4 +56,54 @@ describe('template spec', () => {
     cy.get('.todo-list li')
       .should('have.length', 2);
   });
+
+  it('Edita uma tarefa', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+
+    cy.get('.new-todo')
+      .type('Trabalho de ES{enter}');
+
+    cy.get('.todo-list li')
+      .first()
+      .dblclick()
+      .type('{selectall}TP2 de Engenharia de Software{enter}');
+
+    cy.get('.todo-list li')
+      .should('have.length', 1)
+      .first()
+      .should('have.text', 'TP2 de Engenharia de Software');
+  });
+
+  it('Marca todas as tarefas como completas', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+
+    cy.get('.new-todo')
+      .type('Trabalho de ES{enter}')
+      .type('Prova de ES{enter}')
+      .type('Teste E2E{enter}');
+
+    cy.get('.toggle-all-label').click();
+
+    cy.get('.todo-list li')
+      .should('have.length', 3)
+      .each((el) => {
+        cy.wrap(el).should('have.class', 'completed');
+      });
+  });
+
+  it('Deleta todas as tarefas completas', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+    
+    cy.get('.new-todo')
+      .type('Trabalho de ES{enter}')
+      .type('Prova de ES{enter}')
+      .type('Teste E2E{enter}');
+
+    cy.get('.toggle-all-label').click();
+
+    cy.get('.clear-completed').click();
+
+    cy.get('.todo-list li')
+      .should('have.length', 0);
+  });
 });
